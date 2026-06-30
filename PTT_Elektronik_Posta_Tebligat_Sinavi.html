@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PTT Elektronik Posta & Tebligat Mevzuatı Sınavı</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#16323B;--ink-soft:#4A6168;--mist:#E5EBEB;--paper:#FFFFFF;--line:#D2DCDC;
+    --brand:#00818D;--brand-deep:#0A5A63;
+    --kep:#9A5B1E;--kep-bg:#F4E9DC;
+    --uets:#0A5A63;--uets-bg:#E0EDED;
+    --comp:#6A4A8C;--comp-bg:#ECE6F2;
+    --correct:#1F7A57;--correct-bg:#E4F1EB;--wrong:#B23A2E;--wrong-bg:#F6E4E1;
+    --amber:#C98A00;--amber-bg:#F7EDD6;
+    --shadow:0 1px 2px rgba(22,50,59,.06), 0 8px 28px rgba(22,50,59,.08);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:"IBM Plex Sans",system-ui,sans-serif;color:var(--ink);background:var(--mist);
+    background-image:radial-gradient(circle at 1px 1px, rgba(22,50,59,.05) 1px, transparent 0);
+    background-size:22px 22px;line-height:1.5;-webkit-font-smoothing:antialiased;
+    padding:28px 18px 64px;min-height:100vh;
+  }
+  .wrap{max-width:760px;margin:0 auto}
+  .stamp{font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--brand-deep)}
+
+  header{margin-bottom:22px}
+  .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:10px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .eyebrow .dot{width:5px;height:5px;border-radius:50%;background:var(--brand)}
+  h1{font-family:"Newsreader",serif;font-weight:500;font-size:33px;line-height:1.1;letter-spacing:-.01em;margin-bottom:8px}
+  h1 em{font-style:italic;color:var(--brand-deep)}
+  .sub{color:var(--ink-soft);font-size:15px;max-width:60ch}
+
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:26px 26px 22px}
+
+  .start .deck{display:grid;gap:9px;margin:20px 0 24px}
+  .deck-item{display:flex;gap:13px;align-items:flex-start;border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:#FBFCFC}
+  .deck-item .code{font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:600;color:#fff;border-radius:6px;padding:5px 8px;white-space:nowrap;flex-shrink:0;min-width:78px;text-align:center}
+  .code.c-uets{background:var(--uets)} .code.c-kep{background:var(--kep)}
+  .deck-item .meta{font-size:13px}
+  .deck-item .meta strong{display:block;font-weight:600;margin-bottom:1px;font-size:13.5px}
+  .deck-item .meta span{color:var(--ink-soft);font-size:12px}
+
+  .pick-label{font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:10px}
+  .picks{display:flex;flex-direction:column;gap:9px;margin-bottom:24px}
+  .pick{text-align:left;font:inherit;font-size:14.5px;cursor:pointer;border:1.5px solid var(--line);background:#fff;border-radius:10px;padding:13px 15px;color:var(--ink);transition:.15s;display:flex;justify-content:space-between;align-items:center;gap:12px}
+  .pick:hover{border-color:var(--brand);background:#F4FAFA}
+  .pick.sel{border-color:var(--brand);background:#EAF6F6;box-shadow:inset 0 0 0 1px var(--brand)}
+  .pick .n{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-soft);white-space:nowrap}
+  .pick .pt{display:flex;flex-direction:column;gap:2px}
+  .pick .pt small{font-size:12px;color:var(--ink-soft);font-weight:400}
+
+  .btn{font:inherit;font-weight:600;font-size:15px;cursor:pointer;border:none;border-radius:10px;padding:14px 22px;background:var(--brand-deep);color:#fff;transition:.15s;width:100%;letter-spacing:.01em}
+  .btn:hover{background:#08474E}
+  .btn:disabled{opacity:.4;cursor:not-allowed}
+  .btn.ghost{background:transparent;color:var(--brand-deep);border:1.5px solid var(--line)}
+  .btn.ghost:hover{background:#F4FAFA;border-color:var(--brand)}
+
+  .progress-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+  .ptrack{height:6px;background:var(--mist);border-radius:99px;overflow:hidden;flex:1;margin-right:16px}
+  .pfill{height:100%;background:var(--brand);border-radius:99px;transition:width .35s ease}
+  .pcount{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-soft);white-space:nowrap}
+
+  .q-source{display:inline-flex;align-items:center;gap:8px;margin-bottom:14px;border-radius:7px;padding:5px 10px;border:1px solid var(--line)}
+  .q-source.s-uets{background:var(--uets-bg)} .q-source.s-kep{background:var(--kep-bg)} .q-source.s-comp{background:var(--comp-bg)}
+  .q-source .code{font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:600}
+  .s-uets .code{color:var(--uets)} .s-kep .code{color:var(--kep)} .s-comp .code{color:var(--comp)}
+  .q-source .art{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-soft)}
+  .q-text{font-size:18px;font-weight:600;line-height:1.4;margin-bottom:20px;letter-spacing:-.005em}
+
+  .opts{display:flex;flex-direction:column;gap:10px;margin-bottom:18px}
+  .opt{text-align:left;font:inherit;font-size:15px;cursor:pointer;border:1.5px solid var(--line);background:#fff;border-radius:11px;padding:14px 15px;color:var(--ink);transition:.13s;display:flex;gap:13px;align-items:flex-start;position:relative}
+  .opt:hover:not(:disabled){border-color:var(--brand);background:#F6FBFB}
+  .opt .key{font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:600;width:24px;height:24px;border-radius:6px;background:var(--mist);color:var(--ink-soft);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.13s}
+  .opt:disabled{cursor:default}
+  .opt.correct{border-color:var(--correct);background:var(--correct-bg)}
+  .opt.correct .key{background:var(--correct);color:#fff}
+  .opt.wrong{border-color:var(--wrong);background:var(--wrong-bg)}
+  .opt.wrong .key{background:var(--wrong);color:#fff}
+  .opt .mark{margin-left:auto;font-weight:700;font-size:14px;flex-shrink:0}
+  .opt.correct .mark{color:var(--correct)} .opt.wrong .mark{color:var(--wrong)}
+
+  .explain{border-left:3px solid var(--brand);background:#F3F8F8;border-radius:0 9px 9px 0;padding:13px 16px;font-size:14px;color:var(--ink);margin-bottom:20px;animation:fade .25s ease}
+  .explain.miss{border-left-color:var(--amber);background:var(--amber-bg)}
+  .explain b{font-weight:600}
+  @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+  .nav{display:flex;gap:11px}
+  .nav .btn{width:auto;flex:1}
+
+  .result{text-align:center}
+  .score-ring{width:150px;height:150px;margin:8px auto 18px;position:relative}
+  .score-ring svg{transform:rotate(-90deg)}
+  .score-ring .pct{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .score-ring .pct b{font-family:"Newsreader",serif;font-weight:500;font-size:42px;line-height:1}
+  .score-ring .pct span{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-soft);letter-spacing:.06em;margin-top:3px}
+  .verdict{font-family:"Newsreader",serif;font-size:22px;font-weight:500;margin-bottom:6px}
+  .result .line{color:var(--ink-soft);font-size:14.5px;margin-bottom:22px}
+  .breakdown{display:grid;gap:8px;margin-bottom:24px;text-align:left}
+  .bd-row{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);border-radius:9px;padding:10px 14px;background:#FBFCFC}
+  .bd-row .code{font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:600}
+  .bd-row.r-uets .code{color:var(--uets)} .bd-row.r-kep .code{color:var(--kep)} .bd-row.r-comp .code{color:var(--comp)}
+  .bd-row .name{font-size:12.5px;color:var(--ink-soft);margin-top:2px}
+  .bd-row .frac{font-family:"IBM Plex Mono",monospace;font-size:15px;font-weight:600}
+
+  .review{margin-top:18px;text-align:left;display:none}
+  .review.open{display:block}
+  .rv-item{border-top:1px solid var(--line);padding:14px 0}
+  .rv-item:first-child{border-top:none}
+  .rv-q{font-size:14px;font-weight:600;margin-bottom:6px;display:flex;gap:9px;align-items:flex-start}
+  .rv-q .ic{flex-shrink:0;font-weight:700}
+  .rv-q .ic.ok{color:var(--correct)} .rv-q .ic.no{color:var(--wrong)}
+  .rv-a{font-size:13px;color:var(--ink-soft);margin-left:20px}
+  .rv-a .good{color:var(--correct);font-weight:600}
+
+  footer{text-align:center;margin-top:26px;font-size:12px;color:var(--ink-soft);line-height:1.7}
+  footer .stamp{display:block;margin-bottom:5px;color:var(--ink-soft);font-size:10.5px;letter-spacing:.04em}
+
+  @media(max-width:560px){
+    body{padding:20px 12px 48px} h1{font-size:26px} .card{padding:20px 18px}
+    .q-text{font-size:16.5px} .nav{flex-direction:column-reverse}
+    .deck-item .code{min-width:0}
+  }
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow"><span class="dot"></span>PTT AŞ · Elektronik Tebligat (UETS) & Kayıtlı Elektronik Posta (KEP)</div>
+    <h1>Elektronik Posta &amp; Tebligat <em>Mevzuat Sınavı</em></h1>
+    <p class="sub">Beş düzenlemeyi tek sınavda birleştiren kapsamlı değerlendirme. UETS ve KEP süreçleri ile iki sistem arasındaki karşılaştırmalı sorular bir arada.</p>
+  </header>
+
+  <div id="app"></div>
+
+  <footer>
+    <span class="stamp">EPD.PR02 · USE.002 · EPD.PR04 · USE.003 · USE.004</span>
+    Çalışma amaçlı hazırlanmıştır. Bağlayıcı metin yürürlükteki resmî dokümanlardır.
+  </footer>
+</div>
+
+<script>
+const DOCS = {
+  "EPD.PR02":{name:"UETS Prosedürü",sys:"uets"},
+  "USE.002":{name:"UETS Teknik Kriterler",sys:"uets"},
+  "EPD.PR04":{name:"KEP Prosedürü",sys:"kep"},
+  "USE.003":{name:"KEP İşlem Sertifikası",sys:"kep"},
+  "USE.004":{name:"KEPHS Birlikte Çalışabilirlik",sys:"kep"},
+  "Karşılaştırma":{name:"UETS ↔ KEP karşılaştırma",sys:"comp"}
+};
+
+const QUESTIONS = [
+  // ════════ UETS — EPD.PR02 ════════
+  { cat:"uets", doc:"EPD.PR02", art:"md. 3",
+    q:"UETS Prosedürü hangi kanunu dayanak alır?",
+    opts:["5809 Sayılı Elektronik Haberleşme Kanunu","7201 Sayılı Tebligat Kanunu (7/a, Ek 2, Geçici 2)","6102 Sayılı Türk Ticaret Kanunu","5070 Sayılı Elektronik İmza Kanunu"], a:1,
+    why:"UETS Prosedürü 7201 Sayılı Tebligat Kanunu'nun 7/a, Ek 2 ve Geçici 2. maddeleri dayanak alınarak hazırlanmıştır." },
+  { cat:"uets", doc:"EPD.PR02", art:"md. 6.3.5",
+    q:"Elektronik yolla tebligat ne zaman yapılmış sayılır?",
+    opts:["Muhatap okuduğu anda","Adrese ulaştığı anda","Adrese ulaştığı tarihi izleyen beşinci günün sonunda","Bilgilendirme SMS'i gittiğinde"], a:2,
+    why:"Tebligat, muhatabın adresine ulaştığı tarihi izleyen beşinci günün sonunda yapılmış sayılır; okunmuş olması şart değildir." },
+  { cat:"uets", doc:"EPD.PR02", art:"md. 6.8.1",
+    q:"UETS'te delil kayıtları kaç yıl saklanır?",
+    opts:["10 yıl","15 yıl","20 yıl","30 yıl"], a:3,
+    why:"Delil kayıtları 30 yıl; işlem, iş sürekliliği ve erişim kayıtları ise 10'ar yıl saklanır." },
+  { cat:"uets", doc:"EPD.PR02", art:"md. 6.8.2",
+    q:"UETS'te işlem ve delil kayıtlarının silinmesi hangi şarta bağlıdır?",
+    opts:["Hesap sahibinin onayı","En az bir defa denetimden geçmiş olması","Sürenin iki katının dolması","Bakanlık talebi"], a:1,
+    why:"Süre dolsa bile kayıt, en az bir kez denetimden geçmemişse silinemez." },
+  { cat:"uets", doc:"EPD.PR02", art:"md. 6.7.1",
+    q:"Tüzel kişiler bir UETS hesabı için en az/en fazla kaç ana işlem yetkilisi belirler?",
+    opts:["En az 1 – en fazla 5","En az 1 – en fazla 10","En az 2 – en fazla 10","Sınır yok"], a:1,
+    why:"En az 1, en fazla 10 ana işlem yetkilisi belirlenip PTT'ye bildirilir." },
+  { cat:"uets", doc:"EPD.PR02", art:"md. 6.3.4",
+    q:"Kamu kurumunu yargı önünde vekil sıfatıyla temsil eden kişiye tebligat kime yapılır?",
+    opts:["Vekilin kişisel adresine","Vekilin bağlı bulunduğu birime","Hem vekile hem birime","Adalet Bakanlığına"], a:1,
+    why:"Tebligat vekilin bağlı olduğu birime yapılır; vekilin ayrı kişisel adresi olması kuralı değiştirmez." },
+  { cat:"uets", doc:"EPD.PR02", art:"md. 6.11.2",
+    q:"UETS'te kapatılan adres ne kadar süre erişime açık tutulur?",
+    opts:["1 ay","3 ay","6 ay","1 yıl"], a:2,
+    why:"Kapatılan adres 6 ay erişime açık kalır; süre dolunca tamamen kapanır." },
+  { cat:"uets", doc:"EPD.PR02", art:"md. 6.13",
+    q:"PTT'nin oluşturduğu elektronik tebligat delillerinin niteliği nedir?",
+    opts:["Karine, aksi her zaman ispatlanabilir","Bilgi amaçlı, bağlayıcılığı yok","Senet hükmünde; aksi ispatlanıncaya kadar kesin delil","Yalnız idari işlemde geçerli"], a:2,
+    why:"Deliller senet hükmündedir ve aksi ispat edilinceye kadar kesin delil sayılır." },
+  { cat:"uets", doc:"EPD.PR02", art:"md. 6.17.3",
+    q:"UETS'te mücbir sebep kaç günden fazla sürerse sözleşme feshedilebilir?",
+    opts:["15 gün","30 gün","60 gün","90 gün"], a:1,
+    why:"Mücbir sebep 30 günden fazla sürerse etkilenmeyen taraf 30 gün önceden bildirimle feshedebilir. Bu madde Rev.1 ile eklendi." },
+  { cat:"uets", doc:"EPD.PR02", art:"md. 6.20",
+    q:"UETS hizmetinin mevzuata uygunluğunu denetleme yetkisi kimdedir?",
+    opts:["BTK","Adalet Bakanlığı","Sayıştay","Cumhurbaşkanlığı"], a:1,
+    why:"Adalet Bakanlığı resen veya şikâyet üzerine her zaman denetleyebilir." },
+
+  // ════════ UETS — USE.002 ════════
+  { cat:"uets", doc:"USE.002", art:"md. 3",
+    q:"UETS Teknik Kriterler Usul ve Esasları neye dayanır?",
+    opts:["7201 Sayılı Kanun","Elektronik Tebligat Yönetmeliği m.25/1","5809 Sayılı Kanun","ISO/IEC 27001"], a:1,
+    why:"Dayanak, Elektronik Tebligat Yönetmeliği'nin 25. maddesinin birinci fıkrasıdır." },
+  { cat:"uets", doc:"USE.002", art:"md. 11",
+    q:"UETS hesap numarası kaç hanedir ve ilk hanesi neyi belirtir?",
+    opts:["10 hane – ilçe","11 hane – T.C. kimlik","15 hane – gerçek/resmi tüzel/özel tüzel belirteci","16 hane – il kodu"], a:2,
+    why:"Hesap numarası 15 hanelidir; ilk hane kişilik türü belirtecidir." },
+  { cat:"uets", doc:"USE.002", art:"md. 9",
+    q:"UETS'te her hesaba sunulan ücretsiz depolama ve kota kuralı nedir?",
+    opts:["50 MB, baştan kotalı","En az 100 MB; ilk 6 ay kotasız","1 GB süresiz ücretsiz","Kota yok, hepsi ücretli"], a:1,
+    why:"Her hesaba en az 100 MB; ilk 6 ay kota uygulanmaz, sonra talep üzerine ek arşiv verilebilir." },
+  { cat:"uets", doc:"USE.002", art:"md. 7",
+    q:"UETS'te tebligat paketi ile deliller hangi formatlarla imzalanır?",
+    opts:["Paket XAdES-XL / Deliller CAdES-BES","Paket CAdES-BES veya CAdES-A / Deliller XAdES-XL","Her ikisi PAdES","Paket EYP 1.3 / Deliller FIPS"], a:1,
+    why:"Paket CAdES-BES/CAdES-A; deliller XAdES-XL; işlem kayıtları XAdES-A ile imzalanır." },
+  { cat:"uets", doc:"USE.002", art:"md. 13",
+    q:"PTT, UETS işletiminde hangi standart üçlüsüne uyar?",
+    opts:["ISO 14001 / OHSAS 18001 / ISO 50001","ISO/IEC 27001 / ISO 9001 / ISO/IEC 22301","PCI-DSS / SOC 2 / HIPAA","ISO 27701 / 31000 / 20000"], a:1,
+    why:"Bilgi güvenliği (27001), kalite (9001) ve iş sürekliliği (22301)." },
+  { cat:"uets", doc:"USE.002", art:"md. 16",
+    q:"UETS'te e-imza oluşturma araçları için aranan kriterlerden biri nedir?",
+    opts:["FIPS PUB 140-2 Seviye 3+ veya EAL4+","Yalnız SSL sertifikası","ISO 9001 yeterli","Belge gerekmez"], a:0,
+    why:"FIPS 140-2 Seviye 3+, veya CWA 14167-2, veya CWA 14169 + ISO 15408'e göre EAL4+ akredite belgeyle kanıtlanır." },
+  { cat:"uets", doc:"USE.002", art:"EK-1",
+    q:"UETS delil yapısı hangi standardın uyarlamasıdır?",
+    opts:["ISO/IEC 27001","ETSI TS 102 640-2","FIPS PUB 140-2","W3C WCAG"], a:1,
+    why:"Delil yapısı ETSI TS 102 640-2'nin UETS'ye uyarlanmış halidir (v0.1)." },
+  { cat:"uets", doc:"USE.002", art:"md. 10",
+    q:"Avukat, noter, bilirkişi, arabulucu hesaplarının tespiti için hangi hak sağlanır?",
+    opts:["Adres Rehberi Sorgulama Hakkı","Mesleki Adres Rehberi Sorgulama Hakkı","Genel Sorgu Yetkisi","Toplu Sorgu Hakkı"], a:1,
+    why:"Mesleği gereği e-tebligat zorunlu olan bu hesaplar için Mesleki Adres Rehberi Sorgulama Hakkı tanınır." },
+
+  // ════════ KEP — EPD.PR04 ════════
+  { cat:"kep", doc:"EPD.PR04", art:"md. 3",
+    q:"KEP Hizmetleri Prosedürü hangi düzenlemelere dayanır?",
+    opts:["7201 Sayılı Tebligat Kanunu","6102 Sayılı TTK m.1525 + KEP Yönetmeliği","5070 Sayılı Kanun","Elektronik Tebligat Yönetmeliği"], a:1,
+    why:"Dayanak, 6102 sayılı TTK'nın 1525. maddesi ve KEP Sistemine İlişkin Usul ve Esaslar Hakkında Yönetmelik'tir." },
+  { cat:"kep", doc:"EPD.PR04", art:"md. 6.11.4",
+    q:"KEP sisteminde işlem/delil kayıtları en az kaç yıl saklanır?",
+    opts:["10 yıl","20 yıl","30 yıl","5 yıl"], a:1,
+    why:"PTT, KEP süreçlerine ilişkin kayıtları en az 20 yıl süreyle saklar." },
+  { cat:"kep", doc:"EPD.PR04", art:"md. 6.7.5",
+    q:"Kullanıma kapatılan KEP hesabı en az kaç ay erişime açık tutulur?",
+    opts:["1 ay","3 ay","6 ay","1 yıl"], a:1,
+    why:"Kapatılan KEP hesabından gönderim/alım engellenir ama hesap en az 3 ay erişime açık kalır." },
+  { cat:"kep", doc:"EPD.PR04", art:"md. 5.2.35",
+    q:"KEP kullanıcısı parola/şifresini hangi sıklıkla değiştirmekle yükümlüdür?",
+    opts:["Ayda bir","En az üç ayda bir","Altı ayda bir","Yılda bir"], a:1,
+    why:"Kullanıcı parola/şifrelerini en az üçer aylık periyotlarla değiştirmekle yükümlüdür." },
+  { cat:"kep", doc:"EPD.PR04", art:"md. 6.10.3",
+    q:"KEP yıllık üyelik ücreti hangi sıklıkla tahsil edilir; bakiye yoksa kaç hafta içinde tamamlanmazsa hesap kapatılabilir?",
+    opts:["6 ayda bir / 1 hafta","Her 12 ayda bir / 2 hafta","Her 12 ayda bir / 1 ay","Aylık / 3 gün"], a:1,
+    why:"Yıllık üyelik her 12 ayda bir tahsil edilir; 2 hafta içinde bakiye sağlanmazsa PTT hesabı kapatma hakkını saklı tutar." },
+  { cat:"kep", doc:"EPD.PR04", art:"md. 6.1.2.2",
+    q:"PTT iş yerine gitmeden online KEP başvurusu kimler için mümkündür?",
+    opts:["Tüm tüzel kişiler","Güvenli e-imza sahibi gerçek kişiler","Kamu kurumları","Herkes"], a:1,
+    why:"Güvenli elektronik imza sahibi gerçek kişiler hs01.kep.tr üzerinden online başvurabilir." },
+  { cat:"kep", doc:"EPD.PR04", art:"md. 6.3.1",
+    q:"Gerçek kişiler için KEP hesap adresi hangi formatta oluşturulur?",
+    opts:["tckimlik@kep.tr","adı.soyadı.sayı","kullanıcı.hsX","mersisno.kep.tr"], a:1,
+    why:"Gerçek kişi adresi 'adı.soyadı.sayı' formatında; aynı ad-soyad varsa sonuna (.) ile sayı eklenir." },
+  { cat:"kep", doc:"EPD.PR04", art:"md. 6.6.2",
+    q:"Mücbir sebep dışında KEP hesabına erişilmezse, o işgünü gelen ileti ne zaman okunmuş sayılır?",
+    opts:["Aynı gün sonunda","Ertesi iş günü","5. günün sonunda","Hiç sayılmaz"], a:1,
+    why:"Mücbir sebep dışında erişilmeyen hesaba o işgünü gelen KEP iletisi ertesi iş günü ulaşmış ve okunmuş kabul edilir." },
+  { cat:"kep", doc:"EPD.PR04", art:"md. 6.11.11",
+    q:"PTT KEP sisteminde hangi imza algoritması kullanılır?",
+    opts:["MD5 with DSA","SHA2 with RSA","RC4","3DES"], a:1,
+    why:"KEP sisteminde SHA2 with RSA algoritması kullanılır." },
+  { cat:"kep", doc:"EPD.PR04", art:"md. 6.11.8",
+    q:"PTT KEP sistemi hangi zaman diliminde hizmet verir?",
+    opts:["UTC+0","UTC+2","UTC+3","Yerel saate göre değişken"], a:1,
+    why:"KEP sistemi UTC+2 zaman diliminde hizmet verir." },
+  { cat:"kep", doc:"EPD.PR04", art:"md. 6.8.1",
+    q:"KEP Rehberi'nde gerçek ve tüzel kişinin rehber kaydına ilişkin onay kuralı nedir?",
+    opts:["İkisinin de onayı alınır","İkisinin de onayı alınmaz","Gerçek kişiye sorgu açıklığı onayı sorulur, tüzel kişinin onayı alınmaz","Yalnız tüzel kişiye sorulur"], a:2,
+    why:"Gerçek kişinin rehber kaydının sorguya açık olup olmayacağına onayı alınır; tüzel kişinin kaydına onay alınmaksızın yer verilir." },
+  { cat:"kep", doc:"EPD.PR04", art:"md. 6.8.9",
+    q:"PTT ile merkezi KEP rehberi arasındaki bir sorgu en geç ne kadar sürede cevaplanır?",
+    opts:["5 saniye","20 saniye (gerekirse +10 saniye)","60 saniye","2 dakika"], a:1,
+    why:"Sorgu en geç 20 saniyede cevaplanır; ihtiyaç halinde sorgu başına en fazla 10 saniye ek süre kullanılır." },
+  { cat:"kep", doc:"EPD.PR04", art:"md. 6.7.6",
+    q:"KEP hesabının geçmişe yönelik kapatılması/silinmesi mümkün müdür?",
+    opts:["Evet, talep üzerine","Hayır, hiçbir şekilde yapılamaz","Yalnız tüzel kişilerde","Mahkeme kararıyla"], a:1,
+    why:"KEP hesabı geçmişe yönelik olarak hiçbir şekilde kullanıma kapatılamaz veya silinemez." },
+  { cat:"kep", doc:"EPD.PR04", art:"md. 7",
+    q:"KEP Prosedürü kim tarafından onaylanır?",
+    opts:["Genel Müdür","Yönetim Kurulu","Hukuk Müşavirliği","BTK"], a:1,
+    why:"Bu prosedür Yönetim Kurulu tarafından onaylanır (yürütme Genel Müdür'dedir)." },
+
+  // ════════ KEP — USE.003 (İşlem Sertifikası) ════════
+  { cat:"kep", doc:"USE.003", art:"md. 5/3",
+    q:"KEPHS işlem sertifikasının geçerlilik süresi en fazla ne kadardır?",
+    opts:["6 ay","1 yıl","2 yıl","3 yıl"], a:1,
+    why:"İşlem sertifikası, geçerlilik süresi en fazla bir yıl olacak şekilde ESHS tarafından üretilir." },
+  { cat:"kep", doc:"USE.003", art:"md. 5/4",
+    q:"İşlem sertifikasında para limiti kaç TL olarak belirtilir?",
+    opts:["Limit yoktur","Sıfır (0) TL","1.000 TL","Sınırsız"], a:1,
+    why:"Sertifikanın kullanılacağı işlemler için para limiti sıfır (0) TL'dir; salt işlem imzalama amaçlıdır." },
+  { cat:"kep", doc:"USE.003", art:"md. 6",
+    q:"İşlem sertifikasıyla imzalamada erişim verisi en fazla hangi sıklıkla kullanılır?",
+    opts:["Her işlemde","En fazla 16 saatte bir","Günde bir","Haftada bir"], a:1,
+    why:"İmzalama işleminde en fazla on altı saatte bir kez sertifika sahibinin erişim verisi kullanılır." },
+  { cat:"kep", doc:"USE.003", art:"md. 5/2",
+    q:"İşlem sertifikasını kim üretir ve hukuki statüsü nedir?",
+    opts:["KEPHS üretir; basit sertifika","ESHS üretir; nitelikli elektronik sertifika","BTK üretir; idari belge","Kurum üretir; zaman damgası"], a:1,
+    why:"İşlem sertifikasını ESHS üretir; bu, 5070 m.9 kapsamında nitelikli elektronik sertifikadır." },
+  { cat:"kep", doc:"USE.003", art:"md. 5/5",
+    q:"Adına işlem sertifikası üretilen kişiler değişirse KEPHS kaç gün içinde Kurumu bilgilendirir?",
+    opts:["3 gün","7 gün","15 gün","30 gün"], a:1,
+    why:"KEPHS, adına sertifika üretilen kişilerin değişmesi halinde yedi gün içinde Kurumu bilgilendirir." },
+  { cat:"kep", doc:"USE.003", art:"md. 7",
+    q:"İşlem sertifikası bilgilerinde değişiklik olduğunda ne yapılır?",
+    opts:["KEPHS bekler","KEPHS ESHS'yi derhal bilgilendirir, ESHS derhal iptal eder","Kurum karar verir","Bir yıl sonra iptal edilir"], a:1,
+    why:"KEPHS ESHS'yi derhal bilgilendirir; ESHS de sertifikayı derhal iptal eder." },
+
+  // ════════ KEP — USE.004 (Birlikte Çalışabilirlik) ════════
+  { cat:"kep", doc:"USE.004", art:"md. 4",
+    q:"\"Gönderici KEPHS\" nasıl tanımlanır?",
+    opts:["İletinin 'kime (to)' alanındaki adresin KEPHS'si","İletinin 'kimden (from)' alanındaki adresin KEPHS'si","Alıcının seçtiği KEPHS","BTK'nın atadığı KEPHS"], a:1,
+    why:"Gönderici KEPHS, iletinin 'kimden (from)' alanındaki KEP adresinin ait olduğu KEPHS'dir; Alıcı KEPHS ise 'to/cc' tarafıdır." },
+  { cat:"kep", doc:"USE.004", art:"md. 6/5",
+    q:"Sakla-Bildir modelinde referansla erişilen orijinal ileti kaç ay indirilmezse silinebilir?",
+    opts:["1 ay","3 ay","6 ay","1 yıl"], a:1,
+    why:"Sakla-Bildir modelinde 3 ay içinde indirilmeyen orijinal ileti KEPHS tarafından silinebilir." },
+  { cat:"kep", doc:"USE.004", art:"Tablo-1",
+    q:"\"İndirildi\" (Download) delili hangi çalışma modelinde üretilir?",
+    opts:["Sakla-İlet","Sakla-Bildir","Her ikisi","Hiçbiri"], a:1,
+    why:"Download/DownloadExpiration delilleri Sakla-Bildir modelinde; Retrieval delilleri Sakla-İlet modelinde üretilir." },
+  { cat:"kep", doc:"USE.004", art:"md. 6 / Tablo-1",
+    q:"Teslimi takip eden iş günü saat 23:59'da otomatik üretilen delil hangisidir?",
+    opts:["Teslim Edildi (Delivery)","Kabul Edildi (Acceptance)","Okunmadı / İndirilmedi (RetrievalExpiration / DownloadExpiration)","Alıcı KEPHS'ye Ulaşılamadı (Failure)"], a:2,
+    why:"'Okunmadı' ve 'İndirilmedi' delilleri, teslimi izleyen iş günü saat 23:59'da otomatik üretilir (Yönetmelik m.12/2)." },
+  { cat:"kep", doc:"USE.004", art:"md. 27",
+    q:"KEPHS'ler arası KEP ileti gönteriminde ileti boyutu en fazla ne kadar olabilir?",
+    opts:["10 MB","25 MB","50 MB","100 MB"], a:2,
+    why:"KEPHS'ler arası KEP ileti gönderiminde ileti boyutu 50 MB'yi geçemez." },
+  { cat:"kep", doc:"USE.004", art:"md. 15",
+    q:"KEPHS'ler arası rehber sorguları hangi yöntemle ve hangi kanaldan yapılır?",
+    opts:["E-posta / açık internet","Sadece Ek-1 web servisi / IPSec VPN","FTP / VPN","SMS / SSL"], a:1,
+    why:"Sorgular yalnızca Ek-1'deki web servisiyle ve IPSec VPN üzerinden güvenli kanaldan yapılır." },
+  { cat:"kep", doc:"USE.004", art:"md. 15/7",
+    q:"KEPHS'ler arası rehber sorgu sonuçları ne yapılır?",
+    opts:["Süresiz saklanır","Kullanıcıya iletildikten sonra sorgulayan KEPHS'de silinir","Kuruma gönderilir","Merkezi rehberde tutulur"], a:1,
+    why:"Sorgu sonuçları sorguyu yapan KEPHS tarafından saklanmaz; kullanıcıya iletildikten sonra silinir." },
+  { cat:"kep", doc:"USE.004", art:"md. 22",
+    q:"KEPHS planlı bakım çalışmalarını ne zaman yapabilir?",
+    opts:["Her gece 00.00–06.00","Sadece Pazar 02.00–05.00","Hafta içi mesai dışı","Cumartesi tüm gün"], a:1,
+    why:"Planlı bakım yalnızca Pazar günleri 02.00–05.00 arasında yapılır; daha uzun sürecekse 15 iş günü önceden Kuruma bildirilir." },
+  { cat:"kep", doc:"USE.004", art:"Tablo-3",
+    q:"USE.004'e göre uygulama işlem kayıtları ve kullanıcı/operatör erişim kayıtları kaç yıl saklanır?",
+    opts:["5 yıl","10 yıl","20 yıl","30 yıl"], a:2,
+    why:"Uygulama işlem kayıtları, erişim kayıtları, iptal ses kayıtları ve sistem yönetim kayıtları 20 yıl saklanır. (Kamera 1 yıl, fiziksel giriş-çıkış 3 yıl.)" },
+  { cat:"kep", doc:"USE.004", art:"md. 24/2",
+    q:"KEPHS, KEP sistemindeki işlem kayıtlarını hangi sıklıkla işlem sertifikasıyla imzalar?",
+    opts:["Anlık","Üç saatte bir","Günde bir","Haftada bir"], a:1,
+    why:"İşlem kayıtları üç saatte bir işlem sertifikasıyla imzalanarak saklama süresi boyunca tutulur." },
+  { cat:"kep", doc:"USE.004", art:"md. 6 / Tablo-1",
+    q:"İlk gönderim başarısızsa RelayToREMMDFailure (Ulaşılamadı) delili hangi koşulda üretilir?",
+    opts:["İlk denemede hemen","24 saat boyunca 6 saatlik periyotlarla 4 deneme sonrası","48 saat sonra","Hiç üretilmez"], a:1,
+    why:"24 saat boyunca asgari 6 saatlik periyotlarla 4 defa daha denenir; başarısızlıkta RelayToREMMDFailure üretilir." },
+  { cat:"kep", doc:"USE.004", art:"md. 19",
+    q:"USE.004'e göre KEP delilleri hangi imza formatıyla imzalanır?",
+    opts:["CAdES-BES","XAdES-A","PAdES-A","S/MIME"], a:1,
+    why:"KEP delilleri XAdES-A ile; KEP iletileri/paketleri S/MIME üzeri CAdES-A ile imzalanır. Orijinal ileti özeti SHA-256 ile alınır." },
+  { cat:"kep", doc:"USE.004", art:"md. 7",
+    q:"Orijinal ileti başlığındaki zorunlu 'X-TR-REM-iletiTip' alanı hangi değerleri alabilir?",
+    opts:["acil / normal / düşük","eTebligat / eYazisma / standart","özel / resmi / ticari","gelen / giden / delil"], a:1,
+    why:"İletiTip alanı 'eTebligat', 'eYazisma' veya 'standart' değerlerinden birini alır ve zorunludur." },
+  { cat:"kep", doc:"USE.004", art:"md. 25",
+    q:"Alt işlem yetkilisi için aşağıdakilerden hangisi doğrudur?",
+    opts:["Sayısı en fazla 10'dur","Sayı sınırı yok; ancak yeni alt yetkili tanımlayamaz, hesap açıp kapatamaz","Yeni alt yetkili tanımlayabilir","Hesabı kapatma talebinde bulunabilir"], a:1,
+    why:"Tanımlanabilecek alt işlem yetkilisi sayısında sınır yoktur; ama alt yetkili yeni alt yetkili tanımlayamaz, hesabı açıp kapatamaz, yetkileri düzenleyemez." },
+
+  // ════════ KARŞILAŞTIRMALI (UETS ↔ KEP) ════════
+  { cat:"comp", doc:"Karşılaştırma", art:"EPD.PR02 ↔ EPD.PR04",
+    q:"Delil kayıtlarının saklama süresi UETS ve KEP'te sırasıyla nedir?",
+    opts:["İkisi de 10 yıl","UETS 30 yıl / KEP en az 20 yıl","UETS 20 yıl / KEP 30 yıl","İkisi de 30 yıl"], a:1,
+    why:"UETS'te delil kayıtları 30 yıl; KEP'te işlem/delil kayıtları en az 20 yıl saklanır." },
+  { cat:"comp", doc:"Karşılaştırma", art:"Dayanaklar",
+    q:"UETS ve KEP'in temel dayanağı hangi kanunlardır?",
+    opts:["İkisi de 5070","UETS: 7201 Tebligat Kanunu / KEP: 6102 TTK","UETS: 6102 / KEP: 7201","İkisi de 5809"], a:1,
+    why:"UETS, 7201 Sayılı Tebligat Kanunu'na; KEP, 6102 Sayılı Türk Ticaret Kanunu'na (m.1525) dayanır." },
+  { cat:"comp", doc:"Karşılaştırma", art:"Operatör yapısı",
+    q:"UETS ile KEP'in operatör yapısı arasındaki temel fark nedir?",
+    opts:["İkisi de çok operatörlü","UETS tek operatörlü (PTT/UETS) — KEP çok KEPHS'li ekosistem","UETS çok operatörlü — KEP tek","İkisi de tek operatörlü"], a:1,
+    why:"UETS'te PTT tek operatördür; KEP'te farklı KEPHS'ler birlikte çalışır, bu yüzden Gönderici/Alıcı KEPHS arası ek delil adımları vardır." },
+  { cat:"comp", doc:"Karşılaştırma", art:"Kapatma sonrası erişim",
+    q:"Kapatılan adres/hesap erişime açık kalma süresi UETS ve KEP'te nedir?",
+    opts:["UETS 3 ay / KEP 6 ay","UETS 6 ay / KEP en az 3 ay","İkisi de 6 ay","İkisi de 1 yıl"], a:1,
+    why:"UETS'te kapatılan adres 6 ay; KEP'te kapatılan hesap en az 3 ay erişime açık tutulur." },
+  { cat:"comp", doc:"Karşılaştırma", art:"Ortak standart",
+    q:"UETS ve KEP delil yapılarının ortak temel aldığı uluslararası standart hangisidir?",
+    opts:["ISO 9001","ETSI TS 102 640","FIPS 140-2","RFC 5322"], a:1,
+    why:"Her iki sistemin delil yapısı da ETSI TS 102 640 ailesine dayanır." },
+  { cat:"comp", doc:"Karşılaştırma", art:"Tebliğ anı",
+    q:"Hem UETS'te hem de KEP üzerinden yapılan elektronik tebligatta tebliğ ne zaman gerçekleşmiş sayılır?",
+    opts:["Okunduğu anda","Adrese ulaştığı tarihi izleyen 5. günün sonunda","Ertesi iş günü","Teslimden 24 saat sonra"], a:1,
+    why:"Her iki sistemde de elektronik tebligat, adrese ulaştığı tarihi izleyen beşinci günün sonunda yapılmış sayılır." },
+  { cat:"comp", doc:"Karşılaştırma", art:"İmza katmanı",
+    q:"Hem UETS hem KEP'te delilleri imzalamak için kullanılan format ailesi hangisidir?",
+    opts:["PAdES","XAdES (UETS: XAdES-XL, KEP: XAdES-A)","CAdES-BES","S/MIME"], a:1,
+    why:"Deliller XAdES tabanlı imzalanır: UETS'te XAdES-XL, KEP'te XAdES-A. Paketler ise CAdES tabanlıdır." }
+];
+
+const VERDICTS = [
+  {min:90, t:"Mükemmel", d:"Beş düzenlemeye de hâkimsin."},
+  {min:75, t:"Çok iyi", d:"Sağlam hâkimiyet; birkaç ayrıntı kaldı."},
+  {min:55, t:"İyi", d:"Temel oturmuş; yanlış maddeleri gözden geçir."},
+  {min:0,  t:"Tekrar zamanı", d:"Yanlışları inceleyip dokümanlara dönmek faydalı olur."}
+];
+
+const app = document.getElementById('app');
+let pool = [], idx = 0, answers = [], scope = null;
+
+function shuffle(a){const x=a.slice();for(let i=x.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[x[i],x[j]]=[x[j],x[i]]}return x}
+function countCat(c){return QUESTIONS.filter(q=>c==="all"?true:q.cat===c).length}
+
+function renderStart(){
+  app.innerHTML = `
+    <div class="card start">
+      <div class="deck">
+        <div class="deck-item"><span class="code c-uets">EPD.PR02</span><span class="meta"><strong>Ulusal Elektronik Tebligat Sistemi Prosedürü</strong><span>UETS · Rev.1, 31.01.2025</span></span></div>
+        <div class="deck-item"><span class="code c-uets">USE.002</span><span class="meta"><strong>UETS Teknik Kriterlere İlişkin Usul ve Esaslar</strong><span>UETS · 01.01.2019</span></span></div>
+        <div class="deck-item"><span class="code c-kep">EPD.PR04</span><span class="meta"><strong>Kayıtlı Elektronik Posta Hizmetleri Prosedürü</strong><span>KEP · Rev.1, 01.01.2026</span></span></div>
+        <div class="deck-item"><span class="code c-kep">USE.003</span><span class="meta"><strong>KEP İşlem Sertifikasına İlişkin Usul ve Esaslar</strong><span>KEP · 06.06.2012</span></span></div>
+        <div class="deck-item"><span class="code c-kep">USE.004</span><span class="meta"><strong>KEPHS'lerin Birlikte Çalışabilirliği</strong><span>KEP · BTK Kurul Kararı</span></span></div>
+      </div>
+      <div class="pick-label">Sınav kapsamı</div>
+      <div class="picks">
+        <button class="pick" data-scope="all"><span class="pt"><span>Kapsamlı sınav — tümü karışık</span><small>Beş doküman + karşılaştırma</small></span><span class="n">${countCat("all")} soru</span></button>
+        <button class="pick" data-scope="uets"><span class="pt"><span>Yalnızca UETS (Tebligat)</span><small>EPD.PR02 + USE.002</small></span><span class="n">${countCat("uets")} soru</span></button>
+        <button class="pick" data-scope="kep"><span class="pt"><span>Yalnızca KEP (Posta)</span><small>EPD.PR04 + USE.003 + USE.004</small></span><span class="n">${countCat("kep")} soru</span></button>
+        <button class="pick" data-scope="comp"><span class="pt"><span>Karşılaştırmalı sorular</span><small>UETS ↔ KEP ayrımı</small></span><span class="n">${countCat("comp")} soru</span></button>
+      </div>
+      <button class="btn" id="startBtn" disabled>Sınava başla</button>
+    </div>`;
+  app.querySelectorAll('.pick').forEach(b=>{
+    b.onclick=()=>{
+      app.querySelectorAll('.pick').forEach(x=>x.classList.remove('sel'));
+      b.classList.add('sel'); scope=b.dataset.scope;
+      app.querySelector('#startBtn').disabled=false;
+    };
+  });
+  app.querySelector('#startBtn').onclick=start;
+}
+
+function start(){
+  const base = scope==="all" ? QUESTIONS : QUESTIONS.filter(q=>q.cat===scope);
+  pool = shuffle(base); idx=0; answers=[];
+  renderQ();
+}
+
+function renderQ(){
+  const q = pool[idx];
+  const pct = Math.round(idx/pool.length*100);
+  app.innerHTML = `
+    <div class="card">
+      <div class="progress-row">
+        <div class="ptrack"><div class="pfill" style="width:${pct}%"></div></div>
+        <div class="pcount">${String(idx+1).padStart(2,'0')} / ${String(pool.length).padStart(2,'0')}</div>
+      </div>
+      <div class="q-source s-${q.cat}"><span class="code">${q.doc}</span><span class="art">${q.art}</span></div>
+      <div class="q-text">${q.q}</div>
+      <div class="opts" id="opts"></div>
+      <div id="feedback"></div>
+    </div>`;
+  const optsEl = app.querySelector('#opts');
+  const keys=['A','B','C','D','E'];
+  q.opts.forEach((o,i)=>{
+    const btn=document.createElement('button');
+    btn.className='opt';
+    btn.innerHTML=`<span class="key">${keys[i]}</span><span class="lbl">${o}</span>`;
+    btn.onclick=()=>choose(i);
+    optsEl.appendChild(btn);
+  });
+}
+
+function choose(pick){
+  const q=pool[idx]; answers[idx]=pick;
+  const keys=['A','B','C','D','E'];
+  app.querySelectorAll('.opt').forEach((b,i)=>{
+    b.disabled=true;
+    if(i===q.a){b.classList.add('correct');b.insertAdjacentHTML('beforeend','<span class="mark">Doğru</span>');}
+    else if(i===pick){b.classList.add('wrong');b.insertAdjacentHTML('beforeend','<span class="mark">✕</span>');}
+  });
+  const ok=pick===q.a;
+  const fb=app.querySelector('#feedback');
+  fb.innerHTML=`
+    <div class="explain ${ok?'':'miss'}"><b>${ok?'Doğru.':'Doğru cevap: '+keys[q.a]+'.'}</b> ${q.why}</div>
+    <div class="nav"><button class="btn" id="nextBtn">${idx+1<pool.length?'Sonraki soru':'Sonuçları gör'}</button></div>`;
+  fb.querySelector('#nextBtn').onclick=()=>{
+    if(idx+1<pool.length){idx++;renderQ();} else renderResult();
+    window.scrollTo({top:0,behavior:'smooth'});
+  };
+}
+
+function renderResult(){
+  const total=pool.length;
+  const correct=answers.reduce((s,a,i)=>s+(a===pool[i].a?1:0),0);
+  const pct=Math.round(correct/total*100);
+  const v=VERDICTS.find(x=>pct>=x.min);
+
+  const byDoc={};
+  pool.forEach((q,i)=>{ if(!byDoc[q.doc])byDoc[q.doc]={c:0,t:0,sys:DOCS[q.doc].sys}; byDoc[q.doc].t++; if(answers[i]===q.a)byDoc[q.doc].c++; });
+  const order=["EPD.PR02","USE.002","EPD.PR04","USE.003","USE.004","Karşılaştırma"];
+  const bdHtml=order.filter(d=>byDoc[d]).map(d=>`
+    <div class="bd-row r-${byDoc[d].sys}">
+      <div><div class="code">${d}</div><div class="name">${DOCS[d].name}</div></div>
+      <div class="frac">${byDoc[d].c}/${byDoc[d].t}</div>
+    </div>`).join('');
+
+  const circ=2*Math.PI*64, off=circ*(1-pct/100);
+  const keys=['A','B','C','D','E'];
+  const reviewHtml=pool.map((q,i)=>{
+    const ok=answers[i]===q.a;
+    return `<div class="rv-item">
+      <div class="rv-q"><span class="ic ${ok?'ok':'no'}">${ok?'✓':'✕'}</span><span>${q.q} <span style="color:var(--ink-soft);font-family:'IBM Plex Mono',monospace;font-size:11px">(${q.doc})</span></span></div>
+      ${ok?'':`<div class="rv-a">Senin cevabın: ${keys[answers[i]]} · <span class="good">Doğru: ${keys[q.a]} — ${q.opts[q.a]}</span></div>`}
+    </div>`;
+  }).join('');
+
+  app.innerHTML=`
+    <div class="card result">
+      <div class="score-ring">
+        <svg width="150" height="150" viewBox="0 0 150 150">
+          <circle cx="75" cy="75" r="64" fill="none" stroke="var(--mist)" stroke-width="11"/>
+          <circle cx="75" cy="75" r="64" fill="none" stroke="var(--brand)" stroke-width="11" stroke-linecap="round" stroke-dasharray="${circ}" stroke-dashoffset="${circ}" id="ring"/>
+        </svg>
+        <div class="pct"><b>${pct}<span style="font-size:22px">%</span></b><span>${correct}/${total} DOĞRU</span></div>
+      </div>
+      <div class="verdict">${v.t}</div>
+      <div class="line">${v.d}</div>
+      <div class="breakdown">${bdHtml}</div>
+      <div class="nav">
+        <button class="btn ghost" id="reviewBtn">Yanlışları gör</button>
+        <button class="btn" id="againBtn">Yeniden başla</button>
+      </div>
+      <div class="review" id="review">${reviewHtml}</div>
+    </div>`;
+  requestAnimationFrame(()=>{const r=app.querySelector('#ring');if(r){r.style.transition='stroke-dashoffset 1s ease';r.style.strokeDashoffset=off;}});
+  app.querySelector('#againBtn').onclick=renderStart;
+  app.querySelector('#reviewBtn').onclick=(e)=>{
+    const rv=app.querySelector('#review'); rv.classList.toggle('open');
+    e.target.textContent=rv.classList.contains('open')?'İncelemeyi gizle':'Yanlışları gör';
+  };
+}
+
+renderStart();
+</script>
+</body>
+</html>
